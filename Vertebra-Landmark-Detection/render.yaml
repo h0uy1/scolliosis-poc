@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: vertebra-landmark-detection
+    runtime: docker
+    rootDir: .
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: MODEL_DEVICE
+        value: cpu

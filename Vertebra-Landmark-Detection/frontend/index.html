@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vertebra Inference Test Client</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Inference Client</p>
+          <h1>Vertebra Landmark Detection</h1>
+        </div>
+        <div class="api-controls">
+          <label for="apiBase">API base URL</label>
+          <div class="api-row">
+            <input id="apiBase" type="url" />
+            <button id="healthButton" type="button">Check</button>
+          </div>
+          <p id="healthStatus" class="status muted">Not checked</p>
+        </div>
+      </header>
+
+      <section class="workspace" aria-label="Inference workspace">
+        <div class="input-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Input</p>
+              <h2>X-ray Image</h2>
+            </div>
+            <label class="overlay-toggle">
+              <input id="includeOverlay" type="checkbox" checked />
+              <span>Overlay</span>
+            </label>
+          </div>
+
+          <label id="dropZone" class="drop-zone" for="imageInput">
+            <input id="imageInput" type="file" accept="image/*" />
+            <span class="drop-title">Select image</span>
+            <span id="fileName" class="drop-meta">PNG, JPG, JPEG, or BMP</span>
+          </label>
+
+          <div class="preview-wrap">
+            <img id="sourcePreview" alt="Selected x-ray preview" hidden />
+            <div id="emptyPreview" class="empty-preview">No image selected</div>
+          </div>
+
+          <button id="predictButton" class="primary-action" type="button" disabled>
+            Run inference
+          </button>
+        </div>
+
+        <div class="result-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Output</p>
+              <h2>Prediction</h2>
+            </div>
+            <p id="runtimeStatus" class="status muted">Waiting for image</p>
+          </div>
+
+          <div class="result-grid">
+            <section class="metric-strip" aria-label="Cobb angle results">
+              <div class="metric">
+                <span>Main</span>
+                <strong id="mainAngle">--</strong>
+              </div>
+              <div class="metric">
+                <span>Upper</span>
+                <strong id="upperAngle">--</strong>
+              </div>
+              <div class="metric">
+                <span>Lower</span>
+                <strong id="lowerAngle">--</strong>
+              </div>
+            </section>
+
+            <section class="overlay-view" aria-label="Prediction overlay">
+              <img id="overlayImage" alt="Prediction overlay" hidden />
+              <div id="emptyOverlay" class="empty-preview">No prediction yet</div>
+            </section>
+            <div class="overlay-actions">
+              <a
+                id="openOverlayLink"
+                class="link-button"
+                href="#"
+                target="_blank"
+                rel="noopener"
+                aria-disabled="true"
+                hidden
+              >
+                Open overlay
+              </a>
+            </div>
+
+            <section class="summary-grid" aria-label="Prediction summary">
+              <div>
+                <span>Device</span>
+                <strong id="deviceValue">--</strong>
+              </div>
+              <div>
+                <span>Original size</span>
+                <strong id="originalSize">--</strong>
+              </div>
+              <div>
+                <span>Model input</span>
+                <strong id="inputSize">--</strong>
+              </div>
+              <div>
+                <span>Landmarks</span>
+                <strong id="landmarkCount">--</strong>
+              </div>
+            </section>
+
+            <section class="table-section" aria-label="Detected vertebrae">
+              <div class="section-title">
+                <h3>Detected Vertebrae</h3>
+                <span id="vertebraCount">0 items</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Score</th>
+                      <th>Center X</th>
+                      <th>Center Y</th>
+                    </tr>
+                  </thead>
+                  <tbody id="vertebraRows">
+                    <tr>
+                      <td colspan="4">No records</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="json-section" aria-label="Raw API response">
+              <div class="section-title">
+                <h3>Raw Response</h3>
+                <button id="copyJsonButton" type="button" disabled>Copy</button>
+              </div>
+              <pre id="jsonOutput">{}</pre>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
