@@ -58,7 +58,7 @@ The health check initializes the inference service and reports the model device 
 
 1. Open http://127.0.0.1:8000.
 2. Optionally click **Check** beside the API base URL to check the server.
-3. Select an X-ray image (PNG, JPG, JPEG, or BMP).
+3. Select an X-ray image (PNG, JPG, JPEG, or BMP). Sample images are available in `Vertebra-Landmark-Detection/test_data_dir/data/test` from the repository root (or `test_data_dir/data/test` from the project folder).
 4. Leave **Overlay** checked to include a rendered prediction overlay, or uncheck it to omit the overlay.
 5. Click **Run inference** to view the detected landmarks and Cobb angle estimates.
 
