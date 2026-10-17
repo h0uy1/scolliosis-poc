@@ -12,6 +12,12 @@ A research prototype for detecting vertebral landmarks in spinal X-ray images an
 - Provides a FastAPI API and interactive API documentation.
 - Runs on CUDA when available; otherwise, it uses CPU.
 
+## Results
+
+Example of the web frontend after image inference, showing the uploaded X-ray, detected landmarks, Cobb angle estimates, and overlay.
+
+![Frontend result showing detected landmarks and Cobb angle estimates](./image.png)
+
 ## Requirements
 
 - Python 3.11 or newer
