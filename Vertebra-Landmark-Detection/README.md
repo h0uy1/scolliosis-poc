@@ -1,71 +1,107 @@
-# Vertebra-Focused-Landmark-Detection-Pytorch
-Vertebra-Focused Landmark Detection for Scoliosis Assessment   [[arXiv](https://arxiv.org/pdf/2001.03187.pdf)]
+# Vertebra Landmark Detection
 
-Accepted to ISBI2020.
+A research prototype for detecting vertebral landmarks in spinal X-ray images and estimating Cobb angles. The project includes a PyTorch model, a FastAPI backend, and a browser-based frontend for trying image inference.
 
+> This project is a research prototype and is not intended for clinical diagnosis or treatment decisions.
 
-Please cite the article in your publications if it helps your research:
+## Features
 
-	@article{yi2020vertebra,
-	  title={Vertebra-Focused Landmark Detection for Scoliosis Assessment},
-	  author={Yi, Jingru and Wu, Pengxiang and Huang, Qiaoying and Qu, Hui and Metaxas, Dimitris N},
-	  booktitle={ISBI},
-	  year={2020}
-	}
+- Detects vertebral landmarks in uploaded X-ray images.
+- Estimates main, upper, and lower Cobb angles when landmarks are detected.
+- Displays the prediction, vertebra summary, and optional image overlay in the frontend.
+- Provides a FastAPI API and interactive API documentation.
+- Runs on CUDA when available; otherwise, it uses CPU.
 
+## Requirements
 
-<p align="center">
-	<img src="imgs/pic1.png", width="400">
-</p>
+- Python 3.11 or newer
+- [uv](https://docs.astral.sh/uv/)
+- The model weights file at `weights_spinal/model_last.pth` (included in this repository)
 
-<p align="center">
-	<img src="imgs/pic2.png", width="800">
-</p>
+## Start the app locally
 
-# Dependencies
-Ubuntu 14.04, Python 3.6.4, PyTorch 1.1.0, OpenCV-Python 4.1.0.25 
+Open a terminal in the project directory:
 
-# How to start
-## Prepare Dataset
-To directly use dataset.py, you can arrange the dataset as follows:
-```
-/dataPath/data
-	/train/*.jpg
-	/val/*.jpg
-	/test/*.jpg
-/dataPath/labels/
-	/train/*.mat
-	/val/*.mat
-	/test/*.mat
-```
-The source dataset is from [[dataset16](http://spineweb.digitalimaginggroup.ca/spineweb/index.php?n=Main.Datasets#Dataset_16.3A_609_spinal_anterior-posterior_x-ray_images)].
-To adapt the code to your own dataset, you can modify the dataset.py, for example, change the 'load_gt_pts' function to adapt it to your own annotations. The pretrained weights can be downloaded [here](https://drive.google.com/drive/folders/1LhKnGVE8dUw0nK9_x4vPNY_L7sPY2_aQ?usp=sharing).
-	
-## Train the model
-```ruby
-python main.py --data_dir dataPath --epochs 50 --batch_size 2 --dataset spinal --phase train
+```powershell
+cd path\to\Vertebra-Landmark-Detection
 ```
 
-## Test the model
-```ruby
-python main.py --resume weightPath --data_dir dataPath --dataset spinal  --phase test
+Install/synchronize the project dependencies:
+
+```powershell
+uv sync
 ```
 
+Start the development server:
 
-## Evaluate the model
-```ruby
-python main.py --resume weightPath --data_dir dataPath --dataset spinal --phase eval
+```powershell
+uv run fastapi dev api.py
 ```
 
-## Run the API
+When the server is running, open **http://127.0.0.1:8000** in your browser to use the frontend. Keep the server running while using the page.
+
+Other useful URLs:
+
+- API documentation: http://127.0.0.1:8000/docs
+- Alternative API documentation: http://127.0.0.1:8000/redoc
+- Health check: http://127.0.0.1:8000/health
+
+The health check initializes the inference service and reports the model device and expected input size.
+
+## Using the frontend
+
+1. Open http://127.0.0.1:8000.
+2. Optionally click **Check** beside the API base URL to check the server.
+3. Select an X-ray image (PNG, JPG, JPEG, or BMP).
+4. Leave **Overlay** checked to include a rendered prediction overlay, or uncheck it to omit the overlay.
+5. Click **Run inference** to view the detected landmarks and Cobb angle estimates.
+
+## API
+
+### `GET /health`
+
+Checks that the inference service and model can be loaded. A successful response includes the selected device and model input dimensions.
+
+### `POST /predict`
+
+Accepts an image as multipart form data under the `file` field. Use the optional `include_overlay` query parameter to control whether the response includes an overlay image encoded as base64; it defaults to `true`.
+
+Example with `curl`:
+
 ```bash
-uvicorn api:app --reload --host 0.0.0.0 --port 8000
+curl -X POST "http://127.0.0.1:8000/predict?include_overlay=true" \
+  -F "file=@xray.jpg"
 ```
 
-The API provides:
+The JSON response includes Cobb angle estimates, detected landmarks and vertebrae, image dimensions, the inference device, and—when requested—the overlay image.
 
-- `GET /health`
-- `POST /predict?include_overlay=true`
+## Configuration
 
-## Test Inference from the Frontend
-Open `frontend/index.html` in a browser, keep the API base URL as `http://127.0.0.1:8000`, choose an x-ray image, then run inference.
+The inference service uses these optional environment variables:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `MODEL_WEIGHTS` | `weights_spinal/model_last.pth` | Path to the model checkpoint |
+| `MODEL_DEVICE` | Automatically selected | Inference device, such as `cpu` or `cuda` |
+| `MODEL_INPUT_H` | `1024` | Model input height |
+| `MODEL_INPUT_W` | `512` | Model input width |
+| `CORS_ORIGINS` | `*` | Comma-separated allowed browser origins |
+
+## Project structure
+
+```text
+api.py                 FastAPI routes and frontend hosting
+inference.py           Model loading and image inference
+models/                PyTorch model architecture
+weights_spinal/        Model checkpoint
+frontend/              Browser frontend (HTML, CSS, and JavaScript)
+train.py               Model training entry point
+eval.py                Evaluation entry point
+test.py                Testing entry point
+```
+
+## Research reference
+
+This project is based on the vertebra-focused landmark detection approach described in:
+
+> Yi, J., Wu, P., Huang, Q., Qu, H., & Metaxas, D. N. “Vertebra-Focused Landmark Detection for Scoliosis Assessment.” ISBI, 2020. [arXiv:2001.03187](https://arxiv.org/abs/2001.03187).
