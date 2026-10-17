@@ -16,14 +16,14 @@ A research prototype for detecting vertebral landmarks in spinal X-ray images an
 
 - Python 3.11 or newer
 - [uv](https://docs.astral.sh/uv/)
-- The model weights file at `weights_spinal/model_last.pth` (included in this repository)
+- The model weights file at `Vertebra-Landmark-Detection/weights_spinal/model_last.pth` (included in the project folder)
 
 ## Start the app locally
 
-Open a terminal in the project directory:
+Open a terminal in the repository root (`sollusis`) and change into the API project folder:
 
 ```powershell
-cd path\to\Vertebra-Landmark-Detection
+cd .\Vertebra-Landmark-Detection
 ```
 
 Install/synchronize the project dependencies:
@@ -90,14 +90,17 @@ The inference service uses these optional environment variables:
 ## Project structure
 
 ```text
-api.py                 FastAPI routes and frontend hosting
-inference.py           Model loading and image inference
-models/                PyTorch model architecture
-weights_spinal/        Model checkpoint
-frontend/              Browser frontend (HTML, CSS, and JavaScript)
-train.py               Model training entry point
-eval.py                Evaluation entry point
-test.py                Testing entry point
+sollusis/
+├── README.md
+└── Vertebra-Landmark-Detection/
+    ├── api.py                 FastAPI routes and frontend hosting
+    ├── inference.py           Model loading and image inference
+    ├── models/                PyTorch model architecture
+    ├── weights_spinal/        Model checkpoint
+    ├── frontend/              Browser frontend (HTML, CSS, and JavaScript)
+    ├── train.py               Model training entry point
+    ├── eval.py                Evaluation entry point
+    └── test.py                Testing entry point
 ```
 
 ## Research reference
